@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hermes-hud"
+version = "0.1.0"
+description = "Consciousness monitor for AI agents — interactive TUI dashboard"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+authors = [
+    {name = "Joey Rodriguez"},
+]
+keywords = ["ai", "agent", "dashboard", "tui", "terminal", "neofetch", "hermes"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: System :: Monitoring",
+]
+dependencies = [
+    "textual>=1.0.0",
+    "pyyaml>=6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/joeynyc/hermes-hud"
+Repository = "https://github.com/joeynyc/hermes-hud"
+Issues = "https://github.com/joeynyc/hermes-hud/issues"
+
+[project.scripts]
+hermes-hud = "hud:main"
+
+[tool.setuptools]
+py-modules = ["hud", "collect", "models", "snapshot",
+              "neofetch_ai", "neofetch_anime", "neofetch_base",
+              "neofetch_br", "neofetch_fsociety"]
+
+[tool.setuptools.packages.find]
+include = ["collectors*", "widgets*"]
