@@ -7,8 +7,12 @@ Thanks for your interest. Here's how to get involved.
 ```bash
 git clone https://github.com/joeynyc/hermes-hud.git
 cd hermes-hud
-pip install -r requirements.txt
+python3.11 -m venv venv
+source venv/bin/activate
+python -m pip install -e ".[neofetch]"
 ```
+
+If `python3.11` is not the right binary on your system, use any Python 3.11+ interpreter you have available instead.
 
 You'll need [Hermes Agent](https://github.com/NousResearch/hermes) installed at `~/.hermes/` for the HUD to have data to display. Without it, panels will be empty but the app will still run.
 
@@ -24,7 +28,7 @@ You'll need [Hermes Agent](https://github.com/NousResearch/hermes) installed at 
 1. Fork the repo
 2. Create a feature branch: `git checkout -b my-feature`
 3. Make your changes
-4. Test locally: `./hermes-hud` for the TUI, `./hermes-hud --neofetch` for skins
+4. Test locally: `hermes-hud` for the TUI, `hermes-hud --neofetch` for skins
 5. Open a PR against `main`
 
 ## What We'd Love Help With

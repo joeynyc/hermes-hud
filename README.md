@@ -49,12 +49,16 @@ The TUI ships with four color themes, selectable from the command palette (`ctrl
 ```bash
 git clone https://github.com/joeynyc/hermes-hud.git
 cd hermes-hud
-python3 -m venv venv
+python3.11 -m venv venv
 source venv/bin/activate
 pip install -e .
 ```
 
-This creates an isolated environment, installs dependencies, and registers the `hermes-hud` command. For neofetch ASCII art themes, install with extras:
+This creates an isolated environment, installs dependencies, and registers the `hermes-hud` command.
+
+> **Python version note:** Hermes HUD requires Python 3.11+. On systems where `python3` still points to Python 3.10 (common on Ubuntu 22.04), `python3 -m venv venv` creates a 3.10 environment and `pip install -e .` will fail with `requires a different Python: 3.10.x not in '>=3.11'`. Use `python3.11` or any other 3.11+ interpreter available on your system when creating the venv.
+
+For neofetch ASCII art themes, install with extras:
 
 ```bash
 pip install -e ".[neofetch]"
@@ -180,11 +184,13 @@ See [CHANGELOG.md](CHANGELOG.md) for version history and release notes.
 ```bash
 git clone https://github.com/joeynyc/hermes-hud.git
 cd hermes-hud
-python3 -m venv venv
+python3.11 -m venv venv
 source venv/bin/activate
 make dev        # Install in editable mode with all extras
 pytest tests/   # Run tests before submitting
 ```
+
+If `python3.11` is not the right binary on your system, use any Python 3.11+ interpreter you have available instead.
 
 ## License
 

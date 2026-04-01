@@ -15,7 +15,11 @@ from .collect import collect_all
 from .models import HUDSnapshot
 
 SNAPSHOT_DIR = os.path.expanduser("~/.hermes-hud")
-SNAPSHOT_FILE = os.path.join(SNAPSHOT_DIR, "snapshots.jsonl")
+
+
+def _snapshot_file() -> str:
+    """Return the current snapshot file path for the active snapshot directory."""
+    return os.path.join(SNAPSHOT_DIR, "snapshots.jsonl")
 
 
 def take_snapshot() -> HUDSnapshot:
@@ -41,6 +45,7 @@ def take_snapshot() -> HUDSnapshot:
 def save_snapshot(snap: HUDSnapshot) -> str:
     """Append snapshot to JSONL file."""
     os.makedirs(SNAPSHOT_DIR, exist_ok=True)
+    snapshot_file = _snapshot_file()
 
     record = {
         "timestamp": snap.timestamp.isoformat(),
@@ -57,19 +62,20 @@ def save_snapshot(snap: HUDSnapshot) -> str:
         "categories": snap.categories,
     }
 
-    with open(SNAPSHOT_FILE, "a") as f:
+    with open(snapshot_file, "a") as f:
         f.write(json.dumps(record) + "\n")
 
-    return SNAPSHOT_FILE
+    return snapshot_file
 
 
 def load_snapshots() -> list[dict]:
     """Load all historical snapshots."""
-    if not os.path.exists(SNAPSHOT_FILE):
+    snapshot_file = _snapshot_file()
+    if not os.path.exists(snapshot_file):
         return []
 
     snapshots = []
-    with open(SNAPSHOT_FILE) as f:
+    with open(snapshot_file) as f:
         for line in f:
             line = line.strip()
             if line:
