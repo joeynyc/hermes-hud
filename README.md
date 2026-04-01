@@ -167,23 +167,7 @@ pytest tests/ -v
 
 ## Changelog
 
-### v0.2.0 — Smooth Setup
-
-**The problem:** v0.1 worked as a personal dashboard but had rough edges that made setup painful for anyone else. Hardcoded `python3.11` shebangs broke on 3.12/3.13. The bash launcher required manual symlinking. `~/projects` and `~/.hermes` were hardcoded with no overrides. Empty panels gave no explanation when Hermes data was missing. There was no test suite, so contributors had no way to verify their changes.
-
-**What changed:**
-
-- **Proper Python package** — Restructured from flat scripts into a `hermes_hud/` package with relative imports. `pip install -e .` registers the `hermes-hud` command automatically. No symlinks, no `sys.path` hacks.
-- **Any Python 3.11+** — Removed all hardcoded `python3.11` shebangs. Works with 3.11, 3.12, 3.13, whatever you have.
-- **Environment variable support** — `HERMES_HOME` overrides the agent data directory. `HERMES_HUD_PROJECTS_DIR` overrides the project scan path. Both documented in `--help`.
-- **First-run guidance** — If `~/.hermes/` doesn't exist, prints a clear message explaining what's needed instead of showing blank panels.
-- **CLI with --help** — All options documented, including neofetch theme flags and environment variables.
-- **Test suite** — 79 tests across 4 files: import validation, env var priority chains, every collector against fake data, full pipeline integration, CLI flags, and regression guards (no `sys.path.insert`, no `python3.11` shebangs).
-- **Makefile** — `make install`, `make dev`, `make clean`, `make test`.
-
-### v0.1.0 — Initial Release
-
-Interactive TUI with 7 tabs, 4 neofetch themes, boot animation, snapshot tracking. The core dashboard.
+See [CHANGELOG.md](CHANGELOG.md) for version history and release notes.
 
 ---
 
