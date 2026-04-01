@@ -52,6 +52,8 @@ After:
 ```bash
 git clone https://github.com/joeynyc/hermes-hud.git
 cd hermes-hud
+python3 -m venv venv
+source venv/bin/activate
 pip install -e .
 hermes-hud
 ```

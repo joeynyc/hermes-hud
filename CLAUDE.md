@@ -9,6 +9,8 @@ Hermes HUD is a self-improvement dashboard for the Hermes Agent. It reads data f
 ## Running
 
 ```bash
+python3 -m venv venv       # Create virtual environment
+source venv/bin/activate   # Activate it
 pip install -e .           # Install in dev mode
 hermes-hud                 # Launch the TUI
 hermes-hud --help          # See all options

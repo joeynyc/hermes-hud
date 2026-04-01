@@ -49,14 +49,18 @@ The TUI ships with four color themes, selectable from the command palette (`ctrl
 ```bash
 git clone https://github.com/joeynyc/hermes-hud.git
 cd hermes-hud
+python3 -m venv venv
+source venv/bin/activate
 pip install -e .
 ```
 
-That's it. This gives you the `hermes-hud` command globally. For neofetch ASCII art themes, install with extras:
+This creates an isolated environment, installs dependencies, and registers the `hermes-hud` command. For neofetch ASCII art themes, install with extras:
 
 ```bash
 pip install -e ".[neofetch]"
 ```
+
+> **Note:** On newer Linux distros (Ubuntu 23.04+, Fedora), pip blocks global installs by default. The venv avoids that entirely.
 
 ### Prerequisites
 
@@ -176,6 +180,8 @@ See [CHANGELOG.md](CHANGELOG.md) for version history and release notes.
 ```bash
 git clone https://github.com/joeynyc/hermes-hud.git
 cd hermes-hud
+python3 -m venv venv
+source venv/bin/activate
 make dev        # Install in editable mode with all extras
 pytest tests/   # Run tests before submitting
 ```
