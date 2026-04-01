@@ -49,13 +49,13 @@ The TUI ships with four color themes, selectable from the command palette (`ctrl
 ```bash
 git clone https://github.com/joeynyc/hermes-hud.git
 cd hermes-hud
-pip install -r requirements.txt
+pip install -e .
 ```
 
-Or install as a package:
+That's it. This gives you the `hermes-hud` command globally. For neofetch ASCII art themes, install with extras:
 
 ```bash
-pip install -e .
+pip install -e ".[neofetch]"
 ```
 
 ### Prerequisites
@@ -64,6 +64,16 @@ pip install -e .
 - [Hermes Agent](https://github.com/NousResearch/hermes) installed at `~/.hermes/`
 
 Without Hermes data, the HUD runs but panels will be empty. It's a mirror — it needs something to reflect.
+
+### Configuration
+
+Hermes HUD works out of the box with zero config. For non-standard setups:
+
+| Environment Variable | Default | Description |
+|---------------------|---------|-------------|
+| `HERMES_HOME` | `~/.hermes` | Agent data directory |
+| `HERMES_HUD_PROJECTS_DIR` | `~/projects` | Directory to scan for git repos |
+| `HERMES_HUD_NOBOOT` | _(unset)_ | Skip boot animation in TUI |
 
 ### Platform Support
 
