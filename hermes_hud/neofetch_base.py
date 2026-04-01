@@ -1,13 +1,10 @@
 """Shared utilities for all neofetch variants."""
 
 import sys
-import os
 import time
 import random
 import re
 from dataclasses import dataclass, field
-
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from .collect import collect_all
 from .collectors.health import collect_health

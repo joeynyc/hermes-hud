@@ -6,8 +6,6 @@ import time
 import random
 import re
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
 from .neofetch_base import (
     collect_neofetch_data, scan_print, tool_bars, daily_bars,
     active_projects, format_cron_schedule, health_summary,

@@ -1,11 +1,8 @@
 """fsociety x hermes neofetch — a collaboration."""
 
-import sys
 import os
 import time
 import random
-
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from .neofetch_base import (
     collect_neofetch_data, type_print, scan_print, color_bar, tool_bars,

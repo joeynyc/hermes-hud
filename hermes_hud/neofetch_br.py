@@ -1,10 +1,7 @@
 """Blade Runner inspired neofetch for Hermes HUD."""
 
-import sys
 import os
 import time
-
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from .neofetch_base import (
     collect_neofetch_data, type_print, scan_print, color_bar, tool_bars,

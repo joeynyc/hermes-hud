@@ -8,12 +8,8 @@ from __future__ import annotations
 
 import json
 import os
-import sys
 from datetime import datetime
 from pathlib import Path
-
-# Add project root to path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from .collect import collect_all
 from .models import HUDSnapshot
