@@ -61,9 +61,9 @@ pip install -e ".[neofetch]"
 ### Prerequisites
 
 - Python 3.11+
-- [Hermes Agent](https://github.com/NousResearch/hermes) installed at `~/.hermes/`
+- [Hermes Agent](https://github.com/NousResearch/hermes) with data at `~/.hermes/`
 
-Without Hermes data, the HUD runs but panels will be empty. It's a mirror — it needs something to reflect.
+Without Hermes data, the HUD runs but panels will be empty. It's a mirror — it needs something to reflect. If `~/.hermes/` doesn't exist, the HUD prints a clear message explaining what's needed before launching.
 
 ### Configuration
 
@@ -84,7 +84,14 @@ Works on **macOS** and **Linux**. The core dashboard (memory, skills, sessions, 
 ## Usage
 
 ```bash
-hermes-hud
+hermes-hud              # Interactive TUI
+hermes-hud --text       # Text summary to stdout
+hermes-hud --snapshot   # Save a snapshot for diff tracking
+hermes-hud --ai         # AI awakening neofetch
+hermes-hud --br         # Blade Runner neofetch
+hermes-hud --fsociety   # Mr. Robot neofetch
+hermes-hud --anime      # Mewtwo ASCII art neofetch
+hermes-hud --help       # Show all options
 ```
 
 ### Keyboard Shortcuts (TUI)
@@ -102,11 +109,19 @@ hermes-hud
 ## Architecture
 
 ```
-collectors/  →  collect.py  →  models.py  →  widgets/  →  hud.py
-  (read)        (orchestrate)    (types)      (render)     (app)
+hermes_hud/
+├── hud.py           — Textual App + CLI entry point
+├── collect.py       — Orchestrates all collectors into HUDState
+├── models.py        — Typed dataclasses for all state
+├── snapshot.py      — Snapshot/diff tracking
+├── collectors/      — One module per data source
+│   └── utils.py     — Centralized path resolution (HERMES_HOME, etc.)
+└── widgets/         — One Textual panel per tab
 ```
 
-**Collectors** read from `~/.hermes/`:
+**Data flow:** `collectors/ → collect.py → models.py → widgets/ → hud.py`
+
+**Collectors** read from the Hermes data directory:
 
 | Module | Data Source |
 |--------|------------|
@@ -121,11 +136,7 @@ collectors/  →  collect.py  →  models.py  →  widgets/  →  hud.py
 | `agents.py` | Active sub-agent processes |
 | `timeline.py` | Key moments in the agent's history |
 
-**Models** define typed dataclasses: `HUDState`, `MemoryState`, `SkillsState`, `SessionsState`, `ConfigState`, `TimelineEvent`, `HUDSnapshot`.
-
-**Widgets** are Textual panels, one per tab. Lazy-loaded on first switch.
-
-**Boot screen scripts** use raw ANSI escape codes for the animated overview on launch. Each theme defines its own ASCII art, color palette, and narrative voice.
+All path resolution flows through `collectors/utils.py`, which checks `HERMES_HOME` / `HERMES_HUD_PROJECTS_DIR` environment variables before falling back to defaults.
 
 ---
 
@@ -143,17 +154,47 @@ collectors/  →  collect.py  →  models.py  →  widgets/  →  hud.py
 
 ---
 
-## Environment
+## Testing
 
-| Variable | Effect |
-|----------|--------|
-| `HERMES_HUD_NOBOOT` | Skip boot animation in TUI |
+```bash
+pip install pytest
+pytest tests/ -v
+```
+
+79 tests covering imports, environment variable handling, every collector, the full data pipeline, snapshot lifecycle, app instantiation, and CLI flags.
+
+---
+
+## Changelog
+
+### v0.2.0 — Smooth Setup
+
+**The problem:** v0.1 worked as a personal dashboard but had rough edges that made setup painful for anyone else. Hardcoded `python3.11` shebangs broke on 3.12/3.13. The bash launcher required manual symlinking. `~/projects` and `~/.hermes` were hardcoded with no overrides. Empty panels gave no explanation when Hermes data was missing. There was no test suite, so contributors had no way to verify their changes.
+
+**What changed:**
+
+- **Proper Python package** — Restructured from flat scripts into a `hermes_hud/` package with relative imports. `pip install -e .` registers the `hermes-hud` command automatically. No symlinks, no `sys.path` hacks.
+- **Any Python 3.11+** — Removed all hardcoded `python3.11` shebangs. Works with 3.11, 3.12, 3.13, whatever you have.
+- **Environment variable support** — `HERMES_HOME` overrides the agent data directory. `HERMES_HUD_PROJECTS_DIR` overrides the project scan path. Both documented in `--help`.
+- **First-run guidance** — If `~/.hermes/` doesn't exist, prints a clear message explaining what's needed instead of showing blank panels.
+- **CLI with --help** — All options documented, including neofetch theme flags and environment variables.
+- **Test suite** — 79 tests across 4 files: import validation, env var priority chains, every collector against fake data, full pipeline integration, CLI flags, and regression guards (no `sys.path.insert`, no `python3.11` shebangs).
+- **Makefile** — `make install`, `make dev`, `make clean`, `make test`.
+
+### v0.1.0 — Initial Release
+
+Interactive TUI with 7 tabs, 4 neofetch themes, boot animation, snapshot tracking. The core dashboard.
 
 ---
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+```bash
+git clone https://github.com/joeynyc/hermes-hud.git
+cd hermes-hud
+make dev        # Install in editable mode with all extras
+pytest tests/   # Run tests before submitting
+```
 
 ## License
 
