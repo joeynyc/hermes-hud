@@ -53,6 +53,7 @@ def _gradient_text_rich(text, colors):
 
 def _raw_bar_rich(pct, width=22):
     """Gradient bar using textual markup."""
+    pct = max(0, min(pct, 100))
     filled = int(pct / 100 * width)
     empty = width - filled
     gradient = [B2, B3, B4, B5, B6, B7, B8]

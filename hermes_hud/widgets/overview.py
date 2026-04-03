@@ -20,6 +20,7 @@ class CapacityBar(Static):
 
     def compose(self) -> ComposeResult:
         pct = (self.current / self.maximum * 100) if self.maximum > 0 else 0
+        pct = max(0, min(pct, 100))
         filled = int(pct / 100 * 30)
         empty = 30 - filled
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from rich.markup import escape
 from textual.app import ComposeResult
 from textual.widgets import Static
 
@@ -58,7 +59,7 @@ class SessionsPanel(Static):
         # Recent sessions
         yield Static("  [bold underline]Recent Sessions[/bold underline]")
         for s in self.sessions.sessions[:8]:
-            title = (s.title or "Untitled")[:50]
+            title = escape((s.title or "Untitled")[:50])
             yield Static(
                 f"  {s.started_at:%m-%d %H:%M} │ "
                 f"[bold]{title}[/bold] "

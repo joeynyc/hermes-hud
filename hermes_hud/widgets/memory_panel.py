@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from rich.markup import escape
 from textual.app import ComposeResult
 from textual.widgets import Static
 
@@ -72,7 +73,7 @@ class MemoryPanel(Static):
     def _render_entries(entries):
         for entry in entries:
             style, icon = CATEGORY_STYLES.get(entry.category, ("dim", "·"))
-            text = entry.text.replace("\n", " ")
+            text = escape(entry.text.replace("\n", " "))
             if len(text) > 100:
                 text = text[:97] + "..."
             yield Static(f"  [{style}]{icon} {text}[/{style}]")
