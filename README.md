@@ -20,7 +20,7 @@ Hermes HUD reads from `~/.hermes/` and surfaces everything the agent knows about
 
 ## Features
 
-- **Interactive TUI** — Full Textual dashboard with 7 tabs, keyboard navigation, and 4 color themes
+- **Interactive TUI** — Full Textual dashboard with 8 tabs, keyboard navigation, and 4 color themes
 - **Themed Boot Screen** — Gradient ANSI art intro with personality
 - **Growth Tracking** — Snapshot diffs show what changed since yesterday: new skills, sessions, corrections
 - **Memory Introspection** — Every memory entry, color-coded by type, corrections highlighted
@@ -30,6 +30,7 @@ Hermes HUD reads from `~/.hermes/` and surfaces everything the agent knows about
 - **Project Tracker** — Git repos the agent works on, languages detected, uncommitted changes
 - **Health Checks** — API keys, running services, gateway status at a glance
 - **Corrections Log** — Every mistake the agent made and what it learned from it
+- **Profiles** — All agent profiles at a glance: model, backend, memory usage, session stats, service status
 
 ---
 
@@ -106,7 +107,7 @@ hermes-hud --help       # Show all options
 
 | Key | Action |
 |-----|--------|
-| `1`-`7` | Switch tabs |
+| `1`-`8` | Switch tabs |
 | `j` / `k` | Scroll down / up |
 | `g` / `G` | Jump to top / bottom |
 | `r` | Refresh data |
@@ -142,6 +143,7 @@ hermes_hud/
 | `health.py` | API keys, running services, gateway status |
 | `corrections.py` | Mistakes and lessons learned |
 | `agents.py` | Active sub-agent processes |
+| `profiles.py` | Agent profiles — config, stats, services |
 | `timeline.py` | Key moments in the agent's history |
 
 All path resolution flows through `collectors/utils.py`, which checks `HERMES_HOME` / `HERMES_HUD_PROJECTS_DIR` environment variables before falling back to defaults.
@@ -159,6 +161,7 @@ All path resolution flows through `collectors/utils.py`, which checks `HERMES_HO
 | 5 | Health | API key status, service health, gateway uptime |
 | 6 | Corrections | Mistakes made, lessons learned, severity levels |
 | 7 | Agents | Active sub-agent processes and their status |
+| 8 | Profiles | Agent profiles — model, backend, memory, sessions, services |
 
 ---
 
@@ -169,7 +172,7 @@ pip install pytest
 pytest tests/ -v
 ```
 
-79 tests covering imports, environment variable handling, every collector, the full data pipeline, snapshot lifecycle, app instantiation, and CLI flags.
+97 tests covering imports, environment variable handling, every collector (including profiles), the full data pipeline, snapshot lifecycle, app instantiation, and CLI flags.
 
 ---
 

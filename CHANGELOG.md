@@ -4,6 +4,41 @@ All notable changes to Hermes HUD are documented here.
 
 ---
 
+## [0.3.0] — 2026-04-04
+
+### Profiles Tab
+
+Hermes supports multiple agent profiles — isolated instances with their own model, memory, skills, and gateway. Until now there was no way to see them side by side. The new Profiles tab (press `8`) shows every profile on your system with full stats.
+
+**Per-profile data:**
+- Model, provider, backend URL, port, context length
+- Session count, message count, tool calls, token usage (input/output/total)
+- Last active timestamp
+- Memory and user profile capacity bars with entry counts
+- Skill count, cron job count
+- Toolsets enabled
+- SOUL.md personality summary (first line)
+- Compression config (model + enabled status)
+- API key names from `.env` (names only, never values)
+- Gateway status (systemd service check)
+- Server status (health endpoint check for local llama-server)
+- CLI alias detection (`~/.local/bin/<name>`)
+- Local vs API classification
+
+**Files added:**
+- `hermes_hud/collectors/profiles.py` — scans `~/.hermes/` (default profile) and `~/.hermes/profiles/*/` (custom profiles)
+- `hermes_hud/widgets/profiles_panel.py` — card-style Rich markup display with capacity bars and status dots
+- `tests/test_profiles.py` — 18 tests against fake profile fixtures
+
+**Also:**
+- `ProfileInfo` and `ProfilesState` dataclasses in `models.py`
+- Tab 8 wired into `hud.py` with CSS, keybinding, and lazy-load
+- Fake "social" profile added to test fixtures in `conftest.py`
+- Import checks updated for new modules
+- 97 tests pass (was 79)
+
+---
+
 ## [0.2.0] — 2026-04-01
 
 ### The Problem
