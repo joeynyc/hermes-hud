@@ -193,6 +193,85 @@ class HUDSnapshot:
     categories: list[str] = field(default_factory=list)
 
 
+# ── Profiles ───────────────────────────────────────────────
+
+@dataclass
+class ProfileInfo:
+    name: str
+    is_default: bool = False
+    # Config
+    model: str = ""
+    provider: str = ""
+    base_url: str = ""
+    port: Optional[int] = None
+    toolsets: list[str] = field(default_factory=list)
+    skin: str = ""
+    context_length: int = 0
+    # Personality
+    soul_summary: str = ""  # first meaningful line of SOUL.md
+    # Usage stats (from state.db)
+    session_count: int = 0
+    message_count: int = 0
+    tool_call_count: int = 0
+    total_input_tokens: int = 0
+    total_output_tokens: int = 0
+    last_active: Optional[datetime] = None
+    # Memory
+    memory_entries: int = 0
+    memory_chars: int = 0
+    memory_max_chars: int = 2200
+    user_entries: int = 0
+    user_chars: int = 0
+    user_max_chars: int = 1375
+    # Skills & cron
+    skill_count: int = 0
+    cron_job_count: int = 0
+    # API keys configured (names only)
+    api_keys: list[str] = field(default_factory=list)
+    # Status
+    gateway_status: str = "unknown"    # active, inactive, unknown
+    server_status: str = "unknown"     # running, stopped, unknown, n/a
+    has_alias: bool = False
+    # Compression
+    compression_enabled: bool = False
+    compression_model: str = ""
+
+    @property
+    def memory_capacity_pct(self) -> float:
+        return (self.memory_chars / self.memory_max_chars * 100) if self.memory_max_chars > 0 else 0
+
+    @property
+    def user_capacity_pct(self) -> float:
+        return (self.user_chars / self.user_max_chars * 100) if self.user_max_chars > 0 else 0
+
+    @property
+    def total_tokens(self) -> int:
+        return self.total_input_tokens + self.total_output_tokens
+
+    @property
+    def is_local(self) -> bool:
+        return self.provider == "custom" or "localhost" in self.base_url
+
+
+@dataclass
+class ProfilesState:
+    profiles: list[ProfileInfo] = field(default_factory=list)
+
+    @property
+    def total(self) -> int:
+        return len(self.profiles)
+
+    @property
+    def active_count(self) -> int:
+        return sum(1 for p in self.profiles if p.gateway_status == "active" or p.server_status == "running")
+
+    def local_profiles(self) -> list[ProfileInfo]:
+        return [p for p in self.profiles if p.is_local]
+
+    def api_profiles(self) -> list[ProfileInfo]:
+        return [p for p in self.profiles if not p.is_local]
+
+
 # ── Full HUD State ─────────────────────────────────────────
 
 @dataclass

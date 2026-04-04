@@ -30,7 +30,9 @@ from .widgets.health_panel import HealthPanel
 from .widgets.corrections_panel import CorrectionsPanel
 from .widgets.agents_panel import AgentsPanel
 from .collectors.agents import collect_agents
+from .collectors.profiles import collect_profiles
 from .widgets.boot_screen import OverviewNeofetch
+from .widgets.profiles_panel import ProfilesPanel
 
 
 # ── Theme palettes (derived from neofetch variants) ──
@@ -122,6 +124,7 @@ TAB_DEFS = [
     ("health",      "⚿ Health",      "5"),
     ("corrections", "✦ Corrections", "6"),
     ("agents",      "⚡ Agents",     "7"),
+    ("profiles",    "▣ Profiles",    "8"),
 ]
 
 
@@ -203,6 +206,11 @@ class HermesHUD(App):
         border: solid $accent;
     }
 
+    ProfilesPanel {
+        margin: 1 2;
+        border: solid $secondary;
+    }
+
     .status-line {
         margin: 0 2 1 2;
         height: auto;
@@ -253,7 +261,7 @@ class HermesHUD(App):
         return Static(
             f"  [dim]Last refreshed: {self.state.collected_at:%H:%M:%S} │ "
             f"[bold]r[/bold] refresh │ [bold]q[/bold] quit │ "
-            f"[bold]1-7[/bold] switch tabs │ [bold]j/k[/bold] scroll[/dim]",
+            f"[bold]1-8[/bold] switch tabs │ [bold]j/k[/bold] scroll[/dim]",
             classes="status-line",
         )
 
@@ -267,13 +275,14 @@ class HermesHUD(App):
 
     def _load_data(self) -> None:
         """Collect all data and rebuild the dashboard tabs."""
-        with ThreadPoolExecutor(max_workers=6) as pool:
+        with ThreadPoolExecutor(max_workers=7) as pool:
             f_state = pool.submit(collect_all)
             f_cron = pool.submit(collect_cron)
             f_projects = pool.submit(collect_projects)
             f_health = pool.submit(collect_health)
             f_corrections = pool.submit(collect_corrections)
             f_agents = pool.submit(collect_agents)
+            f_profiles = pool.submit(collect_profiles)
 
         self.state = f_state.result()
         cron = f_cron.result()
@@ -281,6 +290,7 @@ class HermesHUD(App):
         health = f_health.result()
         corrections = f_corrections.result()
         agents = f_agents.result()
+        profiles = f_profiles.result()
 
         self._populate_tab("dashboard", [
             OverviewPanel(self.state),
@@ -295,6 +305,7 @@ class HermesHUD(App):
         self._populate_tab("health", [HealthPanel(health)])
         self._populate_tab("corrections", [CorrectionsPanel(corrections)])
         self._populate_tab("agents", [AgentsPanel(agents, cron)])
+        self._populate_tab("profiles", [ProfilesPanel(profiles)])
 
     def action_refresh(self) -> None:
         """Reload all data including overview."""
