@@ -4,7 +4,7 @@
 
 <h3 align="center"><em>What does an AI see when it looks in a mirror?</em></h3>
 
-**Hermes HUD** is a consciousness monitor for AI agents. A terminal dashboard that watches an agent think — its memory, its mistakes, its growth over time. Built for [Hermes](https://github.com/NousResearch/hermes), the AI assistant with persistent memory.
+**Hermes HUD** is a consciousness monitor for AI agents. A terminal dashboard that watches an agent think — its memory, its mistakes, its growth over time. Built for [Hermes](https://github.com/nousresearch/hermes-agent), the AI assistant with persistent memory.
 
 Part neofetch, part flight recorder, part existential crisis rendered in Unicode.
 
@@ -70,7 +70,7 @@ pip install -e ".[neofetch]"
 ### Prerequisites
 
 - Python 3.11+
-- [Hermes Agent](https://github.com/NousResearch/hermes) with data at `~/.hermes/`
+- [Hermes Agent](https://github.com/nousresearch/hermes-agent) with data at `~/.hermes/`
 
 Without Hermes data, the HUD runs but panels will be empty. It's a mirror — it needs something to reflect. If `~/.hermes/` doesn't exist, the HUD prints a clear message explaining what's needed before launching.
 
