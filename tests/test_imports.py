@@ -40,6 +40,8 @@ MODULES = [
     "hermes_hud.widgets.health_panel",
     "hermes_hud.widgets.corrections_panel",
     "hermes_hud.widgets.agents_panel",
+    "hermes_hud.collectors.profiles",
+    "hermes_hud.widgets.profiles_panel",
 ]
 
 

@@ -34,8 +34,13 @@ If `~/.hermes/` doesn't exist, the HUD prints a clear message explaining what's 
 
 **Developer experience**
 - Makefile with `make install`, `make dev`, `make clean`, `make test`
+- Setup docs now explicitly call out creating the venv with Python 3.11+ on systems where `python3` is still 3.10
+- Contributing docs now use the installed `hermes-hud` command instead of a nonexistent `./hermes-hud` script
 - `pyfiglet` moved to optional `[neofetch]` extra
 - Updated CLAUDE.md for the new package structure
+
+**Snapshot storage**
+- Fixed snapshot save/load path handling so tests and alternate snapshot directories resolve the current target file correctly
 
 ### Installation (before → after)
 
@@ -52,7 +57,7 @@ After:
 ```bash
 git clone https://github.com/joeynyc/hermes-hud.git
 cd hermes-hud
-python3 -m venv venv
+python3.11 -m venv venv
 source venv/bin/activate
 pip install -e .
 hermes-hud

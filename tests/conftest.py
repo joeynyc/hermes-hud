@@ -180,9 +180,79 @@ def fake_hermes_home(tmp_path):
 
     # .env with some fake key names
     (hermes / ".env").write_text(
-        "ANTHROPIC_API_KEY=sk-test-fake\n"
-        "OPENAI_API_KEY=sk-test-fake2\n"
+        "ANTHROPIC_API_KEY=sk-fake\n"
+        "OPENAI_API_KEY=sk-fake\n"
     )
+
+    # profiles/ — a fake "social" profile
+    profile_dir = hermes / "profiles" / "social"
+    profile_dir.mkdir(parents=True)
+    (profile_dir / "config.yaml").write_text(
+        "model:\n"
+        "  default: gemma-4-26b\n"
+        "  provider: custom\n"
+        "  base_url: http://localhost:8081/v1\n"
+        "  context_length: 32768\n"
+        "toolsets:\n"
+        "- web\n"
+        "- terminal\n"
+        "display:\n"
+        "  skin: ares\n"
+        "compression:\n"
+        "  enabled: true\n"
+        "  summary_model: gemma-4-26b\n"
+        "memory:\n"
+        "  memory_char_limit: 2200\n"
+        "  user_char_limit: 1375\n"
+    )
+    (profile_dir / "SOUL.md").write_text(
+        "# Social Agent\n\n"
+        "You are a social media assistant focused on X/Twitter content.\n"
+    )
+    profile_mem_dir = profile_dir / "memories"
+    profile_mem_dir.mkdir()
+    (profile_mem_dir / "MEMORY.md").write_text(
+        "Social profile memory entry one.\n"
+        "\u00a7\n"
+        "Social profile memory entry two.\n"
+    )
+    (profile_mem_dir / "USER.md").write_text(
+        "Name: TestUser. Likes dark mode.\n"
+    )
+    # state.db for the profile
+    profile_db = profile_dir / "state.db"
+    pconn = sqlite3.connect(str(profile_db))
+    pconn.execute("""
+        CREATE TABLE sessions (
+            id TEXT PRIMARY KEY, source TEXT, title TEXT,
+            started_at REAL, ended_at REAL, model TEXT, provider TEXT,
+            message_count INTEGER DEFAULT 0, tool_call_count INTEGER DEFAULT 0,
+            input_tokens INTEGER DEFAULT 0, output_tokens INTEGER DEFAULT 0,
+            cache_read_tokens INTEGER DEFAULT 0, cache_write_tokens INTEGER DEFAULT 0,
+            reasoning_tokens INTEGER DEFAULT 0, estimated_cost_usd REAL DEFAULT 0.0,
+            model_config TEXT
+        )
+    """)
+    pconn.execute("""
+        CREATE TABLE messages (
+            id TEXT PRIMARY KEY, session_id TEXT, role TEXT,
+            content TEXT, tool_calls TEXT, created_at REAL
+        )
+    """)
+    pconn.execute(
+        "INSERT INTO sessions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        ("prof-sess-1", "telegram", "Social test", now - 3600, now, "gemma-4-26b",
+         "custom", 8, 2, 5000, 1000, 0, 0, 0, 0.0,
+         json.dumps({"model": "gemma-4-26b"})),
+    )
+    pconn.commit()
+    pconn.close()
+    # Skills
+    profile_skill = profile_dir / "skills" / "social-media" / "xitter"
+    profile_skill.mkdir(parents=True)
+    (profile_skill / "SKILL.md").write_text("---\nname: xitter\n---\n# X\n")
+    # .env
+    (profile_dir / ".env").write_text("TELEGRAM_BOT_TOKEN=fake\n")
 
     return str(hermes)
 
