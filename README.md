@@ -34,7 +34,7 @@ Hermes HUD reads from `~/.hermes/` and surfaces everything the agent knows about
 
 ## Themes
 
-Four color themes, selectable from the command palette (`ctrl+p`):
+Color themes, selectable from the command palette (`ctrl+p`):
 
 - **Neural Awakening** — Blues and cyans on deep black. The default.
 - **Blade Runner** — Amber and neon pink. Warm, dystopian.
