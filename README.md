@@ -55,12 +55,6 @@ source venv/bin/activate
 pip install -e .
 ```
 
-For neofetch ASCII art themes:
-
-```bash
-pip install -e ".[neofetch]"
-```
-
 Hermes HUD works out of the box. For non-standard setups:
 
 | Environment Variable | Default | Description |
