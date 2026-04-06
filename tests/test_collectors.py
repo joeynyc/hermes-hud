@@ -197,6 +197,11 @@ class TestAgentsCollector:
         assert hasattr(agents, "processes")
         assert hasattr(agents, "recent_sessions")
         assert isinstance(agents.processes, list)
+        # tmux fields present and default to empty (no tmux in test env)
+        assert hasattr(agents, "tmux_panes")
+        assert isinstance(agents.tmux_panes, list)
+        assert hasattr(agents, "operator_alerts")
+        assert isinstance(agents.operator_alerts, list)
 
 
 class TestTimelineCollector:

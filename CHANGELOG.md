@@ -4,6 +4,33 @@ All notable changes to Hermes HUD are documented here.
 
 ---
 
+## [0.4.0] — 2026-04-05
+
+### tmux Operator View
+
+Agents running inside tmux were invisible to the HUD — you knew a process was alive but had no idea which pane it lived in or whether it needed your attention. The Agents tab now functions as a live operator panel for Ghostty + tmux workflows.
+
+**What's new:**
+
+- **Pane discovery** — detects all tmux panes across sessions with session/window/pane identity
+- **Process mapping** — matches live agent processes to panes via TTY (one batch `ps` call for all PIDs)
+- **Jump hints** — each live agent line shows `→ session:window.pane` when matched
+- **Operator queue** — scans matched pane output for approval prompts, questions, errors, and stuck states; surfaces them in a color-coded queue at the top of the Agents tab
+- **Pane preview section** — unmatched panes running non-shell commands shown with coordinates
+- **macOS support** — `_get_process_info` now dispatches by platform; macOS variant uses `ps` + `lsof` instead of `/proc`
+- **Graceful fallback** — all tmux code degrades silently when tmux is not installed or no server is running
+- **Parallel capture** — pane preview reads run concurrently via `ThreadPoolExecutor`
+
+**Files changed:**
+- `hermes_hud/collectors/agents.py` — `TmuxPane`, `OperatorAlert` dataclasses; `matched_pane_count`, `unmatched_interesting_panes`, `has_tmux` on `AgentsState`; 10 new helper functions
+- `hermes_hud/widgets/agents_panel.py` — operator queue section, jump hints, unmatched panes section
+- `tests/test_tmux.py` — 45 new tests (tmux parsing, TTY matching, alert detection, macOS etime)
+- `tests/test_collectors.py` — assertions for new `AgentsState` fields
+
+**Test count:** 142 (was 97)
+
+---
+
 ## [0.3.0] — 2026-04-04
 
 ### Profiles Tab
