@@ -20,23 +20,21 @@ Hermes HUD reads from `~/.hermes/` and surfaces everything the agent knows about
 
 ## Features
 
-- **Interactive TUI** — Full Textual dashboard with 8 tabs, keyboard navigation, and 4 color themes
+- **Interactive TUI** — 8 tabs, keyboard navigation, 4 color themes
 - **Themed Boot Screen** — Gradient ANSI art intro with personality
-- **Growth Tracking** — Snapshot diffs show what changed since yesterday: new skills, sessions, corrections
-- **Dashboard: Memory** — Every memory entry, color-coded by type, corrections highlighted
-- **Dashboard: Skills** — Browse all skills across categories with modification timestamps
-- **Dashboard: Sessions** — Daily activity charts, platform breakdown, tool usage rankings
+- **Growth Tracking** — Snapshot diffs show what changed since yesterday
 - **Cron Monitor** — Scheduled jobs and their execution history
-- **Project Tracker** — Git repos the agent works on, languages detected, uncommitted changes
+- **Project Tracker** — Git repos the agent works on, languages, uncommitted changes
 - **Health Checks** — API keys, running services, gateway status at a glance
-- **Corrections Log** — Every mistake the agent made and what it learned from it
-- **Profiles** — All agent profiles at a glance: model, backend, memory usage, session stats, service status
+- **Corrections Log** — Every mistake the agent made and what it learned
+- **Profiles** — All agent profiles: model, backend, memory, session stats, service status
+- **tmux Operator View** — Maps live agents to panes, jump hints, operator queue for approvals and errors
 
 ---
 
 ## Themes
 
-The TUI ships with four color themes, selectable from the command palette (`ctrl+p`):
+Four color themes, selectable from the command palette (`ctrl+p`):
 
 - **Neural Awakening** — Blues and cyans on deep black. The default.
 - **Blade Runner** — Amber and neon pink. Warm, dystopian.
@@ -47,6 +45,8 @@ The TUI ships with four color themes, selectable from the command palette (`ctrl
 
 ## Installation
 
+Requires Python 3.11+.
+
 ```bash
 git clone https://github.com/joeynyc/hermes-hud.git
 cd hermes-hud
@@ -55,38 +55,21 @@ source venv/bin/activate
 pip install -e .
 ```
 
-This creates an isolated environment, installs dependencies, and registers the `hermes-hud` command.
-
-> **Python version note:** Hermes HUD requires Python 3.11+. On systems where `python3` still points to Python 3.10 (common on Ubuntu 22.04), `python3 -m venv venv` creates a 3.10 environment and `pip install -e .` will fail with `requires a different Python: 3.10.x not in '>=3.11'`. Use `python3.11` or any other 3.11+ interpreter available on your system when creating the venv.
-
-For neofetch ASCII art themes, install with extras:
+For neofetch ASCII art themes:
 
 ```bash
 pip install -e ".[neofetch]"
 ```
 
-> **Note:** On newer Linux distros (Ubuntu 23.04+, Fedora), pip blocks global installs by default. The venv avoids that entirely.
-
-### Prerequisites
-
-- Python 3.11+
-- [Hermes Agent](https://github.com/nousresearch/hermes-agent) with data at `~/.hermes/`
-
-Without Hermes data, the HUD runs but panels will be empty. It's a mirror — it needs something to reflect. If `~/.hermes/` doesn't exist, the HUD prints a clear message explaining what's needed before launching.
-
-### Configuration
-
-Hermes HUD works out of the box with zero config. For non-standard setups:
+Hermes HUD works out of the box. For non-standard setups:
 
 | Environment Variable | Default | Description |
 |---------------------|---------|-------------|
 | `HERMES_HOME` | `~/.hermes` | Agent data directory |
 | `HERMES_HUD_PROJECTS_DIR` | `~/projects` | Directory to scan for git repos |
-| `HERMES_HUD_NOBOOT` | _(unset)_ | Skip boot animation in TUI |
+| `HERMES_HUD_NOBOOT` | _(unset)_ | Skip boot animation |
 
-### Platform Support
-
-Works on **macOS** and **Linux**. The core dashboard (memory, skills, sessions, projects, cron, corrections) is fully cross-platform. The Health and Agents tabs use process inspection that's richest on Linux — on macOS, some service checks will show as unavailable but nothing breaks.
+Works on **macOS** and **Linux**.
 
 ---
 
@@ -103,7 +86,7 @@ hermes-hud --anime      # Mewtwo ASCII art neofetch
 hermes-hud --help       # Show all options
 ```
 
-### Keyboard Shortcuts (TUI)
+### Keyboard Shortcuts
 
 | Key | Action |
 |-----|--------|
@@ -115,73 +98,6 @@ hermes-hud --help       # Show all options
 
 ---
 
-## Architecture
-
-```
-hermes_hud/
-├── hud.py           — Textual App + CLI entry point
-├── collect.py       — Orchestrates all collectors into HUDState
-├── models.py        — Typed dataclasses for all state
-├── snapshot.py      — Snapshot/diff tracking
-├── collectors/      — One module per data source
-│   └── utils.py     — Centralized path resolution (HERMES_HOME, etc.)
-└── widgets/         — One Textual panel per tab
-```
-
-**Data flow:** `collectors/ → collect.py → models.py → widgets/ → hud.py`
-
-**Collectors** read from the Hermes data directory:
-
-| Module | Data Source |
-|--------|------------|
-| `memory.py` | Memory entries (user profile + agent notes) |
-| `skills.py` | Skill library with categories and metadata |
-| `sessions.py` | Conversation history, message counts, tool usage |
-| `config.py` | Agent configuration, model, provider |
-| `cron.py` | Scheduled jobs and execution logs |
-| `projects.py` | Git repositories and working state |
-| `health.py` | API keys, running services, gateway status |
-| `corrections.py` | Mistakes and lessons learned |
-| `agents.py` | Active sub-agent processes |
-| `profiles.py` | Agent profiles — config, stats, services |
-| `timeline.py` | Key moments in the agent's history |
-
-All path resolution flows through `collectors/utils.py`, which checks `HERMES_HOME` / `HERMES_HUD_PROJECTS_DIR` environment variables before falling back to defaults.
-
----
-
-## TUI Tabs
-
-| # | Tab | What It Shows |
-|---|-----|--------------|
-| 1 | Overview | Boot animation + neofetch-style agent summary |
-| 2 | Dashboard | Memory gauges, skill counts, session stats, growth delta |
-| 3 | Cron Jobs | Scheduled tasks, last run times, next execution |
-| 4 | Projects | Git repos, languages, uncommitted changes |
-| 5 | Health | API key status, service health, gateway uptime |
-| 6 | Corrections | Mistakes made, lessons learned, severity levels |
-| 7 | Agents | Active sub-agent processes and their status |
-| 8 | Profiles | Agent profiles — model, backend, memory, sessions, services |
-
----
-
-## Testing
-
-```bash
-pip install pytest
-pytest tests/ -v
-```
-
-142 tests covering imports, environment variable handling, every collector (including profiles), the full data pipeline, snapshot lifecycle, app instantiation, CLI flags, tmux pane parsing, TTY matching, and operator alert detection.
-
----
-
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for version history and release notes.
-
----
-
 ## Contributing
 
 ```bash
@@ -189,11 +105,11 @@ git clone https://github.com/joeynyc/hermes-hud.git
 cd hermes-hud
 python3.11 -m venv venv
 source venv/bin/activate
-make dev        # Install in editable mode with all extras
-pytest tests/   # Run tests before submitting
+make dev
+pytest tests/ -v
 ```
 
-If `python3.11` is not the right binary on your system, use any Python 3.11+ interpreter you have available instead.
+See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ## License
 
