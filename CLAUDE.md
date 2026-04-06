@@ -16,7 +16,7 @@ hermes-hud                 # Launch the TUI
 hermes-hud --help          # See all options
 ```
 
-Requires Python 3.11+ and deps from pyproject.toml (textual, pyyaml).
+Requires Python 3.11+ and deps from pyproject.toml (textual, pyyaml). Optional: pyfiglet for neofetch ASCII art (`pip install -e ".[neofetch]"`).
 
 ## Architecture
 
@@ -43,14 +43,22 @@ hermes_hud/
 │   ├── health.py         # API keys, services
 │   ├── corrections.py    # Mistakes/lessons from memory
 │   ├── agents.py         # Live agent processes
+│   ├── profiles.py       # Agent profiles — config, stats, services
 │   └── timeline.py       # Growth events
 └── widgets/              # Textual panels (one per tab)
-    ├── boot_screen.py    # Animated overview widget
-    ├── overview.py       # Dashboard stats
-    ├── memory_panel.py   # Memory entries
-    ├── skills_panel.py   # Skill library
-    ├── sessions_panel.py # Session analytics
-    └── ...               # cron, projects, health, corrections, agents, diff, timeline
+    ├── boot_screen.py       # Animated overview widget
+    ├── overview.py          # Dashboard stats
+    ├── memory_panel.py      # Memory entries
+    ├── skills_panel.py      # Skill library
+    ├── sessions_panel.py    # Session analytics
+    ├── cron_panel.py        # Cron job monitor
+    ├── projects_panel.py    # Project tracker
+    ├── health_panel.py      # Health checks
+    ├── corrections_panel.py # Corrections log
+    ├── agents_panel.py      # Agent processes
+    ├── profiles_panel.py    # Agent profiles
+    ├── diff_panel.py        # Snapshot diffs
+    └── timeline_panel.py    # Growth timeline
 ```
 
 **Data flow:** `collectors/ → collect.py → models.py → widgets/ → hud.py`

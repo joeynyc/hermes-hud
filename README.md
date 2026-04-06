@@ -23,9 +23,9 @@ Hermes HUD reads from `~/.hermes/` and surfaces everything the agent knows about
 - **Interactive TUI** — Full Textual dashboard with 8 tabs, keyboard navigation, and 4 color themes
 - **Themed Boot Screen** — Gradient ANSI art intro with personality
 - **Growth Tracking** — Snapshot diffs show what changed since yesterday: new skills, sessions, corrections
-- **Memory Introspection** — Every memory entry, color-coded by type, corrections highlighted
-- **Skill Library** — Browse all skills across categories with modification timestamps
-- **Session Analytics** — Daily activity charts, platform breakdown, tool usage rankings
+- **Dashboard: Memory** — Every memory entry, color-coded by type, corrections highlighted
+- **Dashboard: Skills** — Browse all skills across categories with modification timestamps
+- **Dashboard: Sessions** — Daily activity charts, platform breakdown, tool usage rankings
 - **Cron Monitor** — Scheduled jobs and their execution history
 - **Project Tracker** — Git repos the agent works on, languages detected, uncommitted changes
 - **Health Checks** — API keys, running services, gateway status at a glance
@@ -172,7 +172,7 @@ pip install pytest
 pytest tests/ -v
 ```
 
-97 tests covering imports, environment variable handling, every collector (including profiles), the full data pipeline, snapshot lifecycle, app instantiation, and CLI flags.
+142 tests covering imports, environment variable handling, every collector (including profiles), the full data pipeline, snapshot lifecycle, app instantiation, CLI flags, tmux pane parsing, TTY matching, and operator alert detection.
 
 ---
 
