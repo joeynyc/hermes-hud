@@ -6,6 +6,7 @@ import json
 import os
 import sqlite3
 import subprocess
+import yaml
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -20,37 +21,12 @@ from ..models import ProfileInfo, ProfilesState
 _ALIAS_BIN_DIRS = [os.path.expanduser("~/.local/bin"), "/usr/local/bin"]
 
 
-def _parse_yaml_simple(text: str) -> dict:
-    """Minimal YAML parser for config.yaml (flat + one level nested)."""
-    result = {}
-    current_key = None
-    for line in text.split("\n"):
-        stripped = line.strip()
-        if not stripped or stripped.startswith("#"):
-            continue
-        # Nested key (indented)
-        if line.startswith("  ") and current_key and ":" in stripped:
-            k, _, v = stripped.partition(":")
-            v = v.strip().strip("'").strip('"')
-            if current_key not in result or not isinstance(result[current_key], dict):
-                result[current_key] = {}
-            if isinstance(result[current_key], dict):
-                result[current_key][k.strip()] = v
-        # List item
-        elif line.startswith("- ") and current_key:
-            if not isinstance(result.get(current_key), list):
-                result[current_key] = []
-            result[current_key].append(stripped.lstrip("- ").strip())
-        # Top-level key
-        elif ":" in stripped and not stripped.startswith("-"):
-            k, _, v = stripped.partition(":")
-            k = k.strip()
-            v = v.strip().strip("'").strip('"')
-            current_key = k
-            if v:
-                result[k] = v
-            # else: next lines will fill it (dict or list)
-    return result
+def _parse_yaml_safe(text: str) -> dict:
+    """Parse config.yaml using pyyaml.safe_load."""
+    result = yaml.safe_load(text)
+    if isinstance(result, dict):
+        return result
+    return {}
 
 
 def _read_config(profile_dir: Path) -> dict:
@@ -60,7 +36,7 @@ def _read_config(profile_dir: Path) -> dict:
         return {}
     try:
         text = config_path.read_text(encoding="utf-8")
-        return _parse_yaml_simple(text)
+        return _parse_yaml_safe(text)
     except Exception:
         return {}
 
