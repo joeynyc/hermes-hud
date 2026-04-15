@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import json
 import os
-
-from .utils import default_hermes_dir
 import subprocess
 from dataclasses import dataclass, field
+from functools import lru_cache
 from pathlib import Path
 from typing import Optional
+
+from .utils import default_hermes_dir
 
 
 @dataclass
@@ -82,16 +83,9 @@ def _load_dotenv_keys(dotenv_path: str) -> set[str]:
     return keys
 
 
-# Cache for dotenv keys
-_dotenv_cache: set[str] | None = None
-
-
+@lru_cache(maxsize=1)
 def _get_dotenv_keys(hermes_dir: str) -> set[str]:
     """Get all key names from hermes .env files."""
-    global _dotenv_cache
-    if _dotenv_cache is not None:
-        return _dotenv_cache
-
     keys: set[str] = set()
     # Check multiple locations
     for env_path in [
@@ -99,7 +93,6 @@ def _get_dotenv_keys(hermes_dir: str) -> set[str]:
         os.path.expanduser("~/.env"),
     ]:
         keys.update(_load_dotenv_keys(env_path))
-    _dotenv_cache = keys
     return keys
 
 
@@ -193,9 +186,6 @@ def collect_health(hermes_dir: str | None = None) -> HealthState:
         pass
 
     # API keys
-    global _dotenv_cache
-    _dotenv_cache = None  # Reset cache on each collection
-
     known_names = {key_name for key_name, _, _ in EXPECTED_KEYS}
     for key_name, source, note in EXPECTED_KEYS:
         present = _check_env_key(key_name, hermes_dir)
