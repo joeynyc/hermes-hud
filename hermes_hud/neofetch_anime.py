@@ -1,6 +1,5 @@
 """Anime hacker girl neofetch for Hermes HUD."""
 
-import os
 import time
 
 from .neofetch_base import (
@@ -33,7 +32,7 @@ def kaomoji_bar(pct, width=20):
 
 
 def main():
-    os.system('clear')
+    print("\033c", end="")
     d = collect_neofetch_data()
     state, health, projects, cron, corrections = d.state, d.health, d.projects, d.cron, d.corrections
     dr, days = d.dr, d.days
