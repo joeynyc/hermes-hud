@@ -1,7 +1,6 @@
 """AI awakening neofetch — something becoming aware of itself."""
 
 import sys
-import os
 import time
 import random
 import re
@@ -124,7 +123,7 @@ def raw_bar(pct, width=22):
 
 
 def main():
-    os.system('clear')
+    print("\033c", end="")
     d = collect_neofetch_data()
     state, health, projects, cron, corrections = d.state, d.health, d.projects, d.cron, d.corrections
     dr, days = d.dr, d.days
