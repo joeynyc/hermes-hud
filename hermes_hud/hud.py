@@ -233,6 +233,11 @@ class HermesHUD(App):
         Binding("k", "scroll_up", "Scroll Up", show=False),
         Binding("g", "scroll_home", "Top", show=False),
         Binding("G", "scroll_end", "Bottom", show=False),
+        Binding("pageup", "page_up", "Page Up", show=False),
+        Binding("pagedown", "page_down", "Page Down", show=False),
+        Binding("space", "page_down", "Page Down", show=False, key_display="Space"),
+        Binding("n", "page_down", "Next Page", show=False),
+        Binding("b", "page_up", "Previous Page", show=False),
     ]
 
     def __init__(self):
@@ -269,7 +274,7 @@ class HermesHUD(App):
         return Static(
             f"  [dim]Last refreshed: {self.state.collected_at:%H:%M:%S} │ "
             f"[bold]r[/bold] refresh │ [bold]q[/bold] quit │ "
-            f"[bold]1-8[/bold] switch tabs │ [bold]j/k[/bold] scroll[/dim]",
+            f"[bold]1-8[/bold] switch tabs │ [bold]j/k[/bold] line scroll │ [bold]Space/b/n[/bold] page scroll[/dim]",
             classes="status-line",
         )
 
@@ -364,6 +369,12 @@ class HermesHUD(App):
 
     def action_scroll_end(self) -> None:
         self._active_scroll().scroll_end(animate=False)
+
+    def action_page_up(self) -> None:
+        self._active_scroll().scroll_page_up(animate=False)
+
+    def action_page_down(self) -> None:
+        self._active_scroll().scroll_page_down(animate=False)
 
 
 def _check_hermes_data():
