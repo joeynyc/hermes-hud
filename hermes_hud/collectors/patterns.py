@@ -14,6 +14,7 @@ from .utils import default_hermes_dir, parse_timestamp, safe_get
 # First match wins
 _CLUSTERS = [
     ("git ops",    ["commit", "push", "pull", "merge", "branch", "rebase", " pr ", "pull request", "release", "tag", "stash"]),
+    ("legal",      ["affidavit", "exhibit", "pleading", "brief", "court", "filing", "cpr", "defendant", "claimant", "injunction", "discovery", "deposition", "ecsc", "application notice", "witness statement", "costs"]),
     ("debugging",  ["fix", "bug", "error", "broken", "failing", "crash", "traceback", "exception", "not work", "doesn't work"]),
     ("code gen",   ["create", "implement", "add feature", "build", "write a", "new function", "new class", "generate"]),
     ("refactor",   ["refactor", "rename", "clean up", "simplify", "extract", "reorganize", "restructure", "move"]),
