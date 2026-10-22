@@ -8,6 +8,8 @@
 
 Part neofetch, part flight recorder, part existential crisis rendered in Unicode.
 
+**Follow [@aijoey](https://x.com/aijoey) on X** for new releases, themes and what I'm building next with Hermes.
+
 ---
 
 ## What It Does
