@@ -433,6 +433,12 @@ def main():
             mod.main()
             return
 
+    unknown = [arg for arg in sys.argv[1:] if arg.startswith("-")]
+    if unknown:
+        print(f"Unknown option(s): {' '.join(unknown)}", file=sys.stderr)
+        print("Run 'hermes-hud --help' for usage.", file=sys.stderr)
+        sys.exit(2)
+
     _check_hermes_data()
     app = HermesHUD()
     app.run()
