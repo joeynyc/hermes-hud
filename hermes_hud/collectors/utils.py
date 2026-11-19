@@ -1,7 +1,7 @@
 """Shared utilities for Hermes HUD collectors."""
 
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -65,3 +65,43 @@ def parse_timestamp(value) -> Optional[datetime]:
     except (ValueError, TypeError, OSError, OverflowError):
         pass
     return None
+
+
+def _numeric_timestamp(value) -> float | None:
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str):
+        try:
+            return float(value)
+        except ValueError:
+            pass
+    return None
+
+
+def timestamp_to_utc_day(value) -> Optional[str]:
+    """Return the UTC day, or the stated day for a naive ISO timestamp."""
+    parsed = parse_timestamp(value)
+    if parsed is None:
+        return None
+    try:
+        timestamp = _numeric_timestamp(value)
+        if timestamp is not None:
+            return datetime.fromtimestamp(timestamp, timezone.utc).date().isoformat()
+        if parsed.tzinfo is not None:
+            parsed = parsed.astimezone(timezone.utc)
+        return parsed.date().isoformat()
+    except (ValueError, TypeError, OSError, OverflowError):
+        return None
+
+
+def timestamp_to_local_hour(value) -> Optional[int]:
+    """Return a valid timestamp's local hour, preserving naive ISO wall time."""
+    parsed = parse_timestamp(value)
+    if parsed is None:
+        return None
+    try:
+        if parsed.tzinfo is not None:
+            parsed = parsed.astimezone()
+        return parsed.hour
+    except (ValueError, TypeError, OSError, OverflowError):
+        return None

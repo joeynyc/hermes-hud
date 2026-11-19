@@ -8,7 +8,7 @@ import sqlite3
 from pathlib import Path
 
 from ..models import DailyStats, SessionInfo, SessionsState
-from .utils import default_hermes_dir, parse_timestamp, safe_get
+from .utils import default_hermes_dir, parse_timestamp, safe_get, timestamp_to_utc_day
 
 
 def _extract_tool_usage(db_path: str) -> dict[str, int]:
@@ -50,6 +50,7 @@ def collect_sessions(hermes_dir: str | None = None) -> SessionsState:
 
     try:
         conn = sqlite3.connect(db_path)
+        conn.create_function("session_day", 1, timestamp_to_utc_day)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 
@@ -104,23 +105,21 @@ def collect_sessions(hermes_dir: str | None = None) -> SessionsState:
 
         # Daily stats
         cursor.execute("""
-            SELECT date(started_at, 'unixepoch') as day,
+            SELECT session_day(started_at) as day,
                    COUNT(*) as sessions,
                    SUM(message_count) as msgs,
                    SUM(tool_call_count) as tools,
                    SUM(input_tokens + output_tokens) as tokens
             FROM sessions
+            WHERE session_day(started_at) IS NOT NULL
             GROUP BY day
             ORDER BY day
         """)
 
         for row in cursor.fetchall():
             try:
-                day = safe_get(row, "day", "")
-                if not day:
-                    continue  # NULL/non-numeric started_at yields no date bucket
                 daily_stats.append(DailyStats(
-                    date=day,
+                    date=safe_get(row, "day", ""),
                     sessions=safe_get(row, "sessions", 0),
                     messages=safe_get(row, "msgs", 0),
                     tool_calls=safe_get(row, "tools", 0),
