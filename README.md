@@ -108,11 +108,11 @@ See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ## Star History
 
-<a href="https://www.star-history.com/?repos=joeynyc%2Fhermes-hud&type=date&legend=bottom-right">
+<a href="https://star-history.dera.page/#joeynyc/hermes-hud&type=date&legend=bottom-right">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=joeynyc/hermes-hud&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=joeynyc/hermes-hud&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=joeynyc/hermes-hud&type=date&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://star-history.dera.page/svg?repos=joeynyc/hermes-hud&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://star-history.dera.page/svg?repos=joeynyc/hermes-hud&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://star-history.dera.page/svg?repos=joeynyc/hermes-hud&type=date&legend=top-left" />
  </picture>
 </a>
 
