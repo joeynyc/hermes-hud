@@ -542,8 +542,12 @@ def collect_agents(hermes_dir: str | None = None) -> AgentsState:
     processes = []
     seen_pids = set()
 
-    for name, binary in AGENT_PROCESSES:
-        found = _get_process_info(name, binary)
+    names = [name for name, _ in AGENT_PROCESSES]
+    binaries = [binary for _, binary in AGENT_PROCESSES]
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        found_groups = pool.map(_get_process_info, names, binaries)
+
+    for found in found_groups:
         for agent in found:
             if agent.pid and agent.pid in seen_pids:
                 continue
