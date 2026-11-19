@@ -5,7 +5,9 @@ from __future__ import annotations
 from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime
+from ipaddress import ip_address
 from typing import Optional
+from urllib.parse import urlparse
 
 
 # ── Memory ──────────────────────────────────────────────────
@@ -307,7 +309,13 @@ class ProfileInfo:
 
     @property
     def is_local(self) -> bool:
-        return self.provider == "custom" or "localhost" in self.base_url
+        if self.provider == "custom" or "localhost" in self.base_url:
+            return True
+        try:
+            host = urlparse(self.base_url).hostname
+            return ip_address(host).is_loopback if host else False
+        except ValueError:
+            return False
 
 
 @dataclass

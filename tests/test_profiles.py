@@ -84,6 +84,28 @@ class TestProfilesCollector:
         assert default.is_local is False
         assert social.is_local is True
 
+    @pytest.mark.parametrize(
+        ("base_url", "expected_local"),
+        [
+            ("http://127.0.0.1:8080/v1", True),
+            ("http://127.0.0.2:8080/v1", True),
+            ("http://[::1]:8080/v1", True),
+            ("http://localhost:8080/v1", True),
+            ("http://192.0.2.1:8080/v1", False),
+            ("http://192.168.1.10:8080/v1", False),
+            ("https://api.example.com/v1", False),
+            ("", False),
+            ("http://[::1", False),
+        ],
+    )
+    def test_profile_url_local_classification(self, base_url, expected_local):
+        profile = ProfileInfo(name="configured", provider="openai", base_url=base_url)
+        profiles = ProfilesState(profiles=[profile])
+
+        assert profile.is_local is expected_local
+        assert profiles.local_profiles() == ([profile] if expected_local else [])
+        assert profiles.api_profiles() == ([] if expected_local else [profile])
+
     def test_profiles_state_properties(self, fake_hermes_home):
         profiles = collect_profiles(fake_hermes_home)
         assert len(profiles.local_profiles()) == 1
