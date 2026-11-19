@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 from ..models import HourlyActivity, PatternsState, RepeatedPrompt, TaskCluster, ToolWorkflow
-from .utils import default_hermes_dir, parse_timestamp, safe_get
+from .utils import default_hermes_dir, parse_timestamp, safe_get, timestamp_to_local_hour
 
 # First match wins
 _CLUSTERS = [
@@ -70,6 +70,7 @@ def collect_patterns(hermes_dir: str | None = None) -> PatternsState:
 
     try:
         conn = sqlite3.connect(db_path)
+        conn.create_function("session_hour", 1, timestamp_to_local_hour)
         conn.row_factory = sqlite3.Row
         cur = conn.cursor()
 
@@ -119,10 +120,11 @@ def collect_patterns(hermes_dir: str | None = None) -> PatternsState:
 
         # Hourly activity
         cur.execute("""
-            SELECT CAST(strftime('%H', started_at, 'unixepoch', 'localtime') AS INTEGER) as hour,
+            SELECT session_hour(started_at) as hour,
                    COUNT(*) as sessions,
                    COALESCE(SUM(message_count), 0) as messages
             FROM sessions
+            WHERE session_hour(started_at) IS NOT NULL
             GROUP BY hour
             ORDER BY hour
         """)
