@@ -1,6 +1,7 @@
 """Shared fixtures for hermes-hud tests."""
 
 import os
+import subprocess
 import json
 import sqlite3
 import tempfile
@@ -265,14 +266,23 @@ def fake_projects_dir(tmp_path):
 
     repo = projects / "test-project"
     repo.mkdir()
-    os.system(
-        f"cd {repo} && git init -q && "
-        f"git config user.email 'test@test.com' && "
-        f"git config user.name 'Test' 2>/dev/null"
+    subprocess.run(
+        ["git", "init", "-q"], cwd=repo, capture_output=True
+    )
+    subprocess.run(
+        ["git", "config", "user.email", "test@test.com"], cwd=repo, capture_output=True
+    )
+    subprocess.run(
+        ["git", "config", "user.name", "Test"], cwd=repo, capture_output=True
     )
     (repo / "main.py").write_text("print('hello')\n")
     (repo / "utils.py").write_text("def helper(): pass\n")
-    os.system(f"cd {repo} && git add -A && git commit -q -m 'init' 2>/dev/null")
+    subprocess.run(
+        ["git", "add", "-A"], cwd=repo, capture_output=True
+    )
+    subprocess.run(
+        ["git", "commit", "-q", "-m", "init"], cwd=repo, capture_output=True
+    )
 
     return str(projects)
 
